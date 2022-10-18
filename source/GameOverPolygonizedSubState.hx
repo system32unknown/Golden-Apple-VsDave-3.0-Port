@@ -160,22 +160,10 @@ class GameOverPolygonizedSubState extends MusicBeatSubstate
 			FlxG.sound.music.stop();
 			Application.current.window.title = Main.applicationName;
 
-			if (PlayState.SONG.song.toLowerCase() == "exploitation")
-			{
-				Main.toggleFuckedFPS(false);
-			}
-			if (FlxG.save.data.exploitationState == 'playing')
-			{
-				Sys.exit(0);
-			}
 			if (PlayState.isStoryMode)
 				FlxG.switchState(new StoryMenuState());
 			else
 				FlxG.switchState(new FreeplayState());
-		}
-		if (FlxG.keys.justPressed.SEVEN)
-		{
-			FlxG.switchState(new AnimationDebug(bf.curCharacter));
 		}
 
 		if (FlxG.sound.music.playing)

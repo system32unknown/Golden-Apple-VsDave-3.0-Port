@@ -1,30 +1,15 @@
 package;
 
-import flixel.addons.ui.FlxInputText;
 import flixel.group.FlxSpriteGroup;
-import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
-import flixel.addons.effects.chainable.FlxShakeEffect;
-import flixel.addons.effects.chainable.FlxWaveEffect;
-import flixel.addons.effects.chainable.FlxGlitchEffect;
-import flixel.addons.effects.chainable.FlxEffectSprite;
-import sys.FileSystem;
-import flixel.util.FlxSave;
-import flixel.math.FlxRandom;
-import flixel.math.FlxPoint;
-import Controls.KeyboardScheme;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.effects.FlxFlicker;
-import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
-import lime.app.Application;
-import flixel.addons.display.FlxBackdrop;
-import flixel.input.keyboard.FlxKey;
 #if desktop
 import Discord.DiscordClient;
 #end
@@ -69,27 +54,16 @@ class MainMenuState extends MusicBeatState
 	];
 
 	public static var firstStart:Bool = true;
-
 	public static var finishedFunnyMove:Bool = false;
 
-	public static var daRealEngineVer:String = 'Dave';
-	public static var engineVer:String = '3.0b';
-
-	public static var engineVers:Array<String> = 
-	[
-		'Dave', 
-		'Bambi', 
-		'Tristan'
-	];
-
-	public static var kadeEngineVer:String = "DAVE";
+	public static var daRealEngineVer:String = 'Golden Apple';
+	public static var engineVer:String = '(Dave 3.0b)';
 	public static var gameVer:String = "0.2.7.1";
 	
 	var bg:FlxSprite;
 	var magenta:FlxSprite;
 	var selectUi:FlxSprite;
 	var bigIcons:FlxSprite;
-	var camFollow:FlxObject;
 	public static var bgPaths:Array<String> = [
 		'Aadsta',
 		'ArtiztGmer',
@@ -115,15 +89,8 @@ class MainMenuState extends MusicBeatState
 		'zombought',
 	];
 
-	var logoBl:FlxSprite;
-
-	var lilMenuGuy:FlxSprite;
-
-	var awaitingExploitation:Bool;
 	var curOptText:FlxText;
 	var curOptDesc:FlxText;
-
-	var voidShader:Shaders.GlitchEffect;
 	
 	var prompt:Prompt;
 	var canInteract:Bool = true;
@@ -132,7 +99,6 @@ class MainMenuState extends MusicBeatState
 
 	override function create()
 	{
-		awaitingExploitation = (FlxG.save.data.exploitationState == 'awaiting');
 		if (!FlxG.sound.music.playing)
 		{
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
@@ -147,60 +113,25 @@ class MainMenuState extends MusicBeatState
 		
 		MathGameState.accessThroughTerminal = false;
 
-		// daRealEngineVer = engineVers[FlxG.random.int(0, 2)];
+		bg = new FlxSprite(-80).loadGraphic(randomizeBG());
+		bg.scrollFactor.set();
+		bg.setGraphicSize(Std.int(bg.width * 1.1));
+		bg.updateHitbox();
+		bg.screenCenter();
+		bg.antialiasing = true;
+		bg.color = 0xFFFDE871;
+		add(bg);
 
-		if (awaitingExploitation)
-		{
-			optionShit = ['freeplay glitch', 'options'];
-			languagesOptions = ['main_freeplay_glitch', 'main_options'];
-			languagesDescriptions = ['desc_freeplay_glitch', 'desc_options'];
-			bg = new FlxSprite(-600, -200).loadGraphic(Paths.image('backgrounds/void/redsky', 'shared'));
-			bg.scrollFactor.set(0, 0.2);
-			bg.antialiasing = false;
-			bg.color = FlxColor.multiply(bg.color, FlxColor.fromRGB(50, 50, 50));
-			add(bg);
-			
-			#if SHADERS_ENABLED
-			voidShader = new Shaders.GlitchEffect();
-			voidShader.waveAmplitude = 0.1;
-			voidShader.waveFrequency = 5;
-			voidShader.waveSpeed = 2;
-			
-			bg.shader = voidShader.shader;
-			#end
+		magenta = new FlxSprite(-80).loadGraphic(bg.graphic);
+		magenta.scrollFactor.set();
+		magenta.setGraphicSize(Std.int(magenta.width * 1.1));
+		magenta.updateHitbox();
+		magenta.screenCenter();
+		magenta.visible = false;
+		magenta.antialiasing = true;
+		magenta.color = 0xFFfd719b;
+		add(magenta);
 
-			magenta = new FlxSprite(-600, -200).loadGraphic(bg.graphic);
-			magenta.scrollFactor.set();
-			magenta.antialiasing = false;
-			magenta.visible = false;
-			magenta.color = FlxColor.multiply(0xFFfd719b, FlxColor.fromRGB(50, 50, 50));
-			add(magenta);
-
-			#if SHADERS_ENABLED
-			magenta.shader = voidShader.shader;
-			#end
-		}
-		else
-		{
-			bg = new FlxSprite(-80).loadGraphic(randomizeBG());
-			bg.scrollFactor.set();
-			bg.setGraphicSize(Std.int(bg.width * 1.1));
-			bg.updateHitbox();
-			bg.screenCenter();
-			bg.antialiasing = true;
-			bg.color = 0xFFFDE871;
-			add(bg);
-	
-			magenta = new FlxSprite(-80).loadGraphic(bg.graphic);
-			magenta.scrollFactor.set();
-			magenta.setGraphicSize(Std.int(magenta.width * 1.1));
-			magenta.updateHitbox();
-			magenta.screenCenter();
-			magenta.visible = false;
-			magenta.antialiasing = true;
-			magenta.color = 0xFFfd719b;
-			add(magenta);
-		}
 		selectUi = new FlxSprite(0, 0).loadGraphic(Paths.image('mainMenu/Select_Thing', 'preload'));
 		selectUi.scrollFactor.set(0, 0);
 		selectUi.antialiasing = true;
@@ -243,13 +174,6 @@ class MainMenuState extends MusicBeatState
 
 		var tex = Paths.getSparrowAtlas('ui/main_menu_icons');
 
-		//camFollow = new FlxObject(0, 0, 1, 1);
-		//add(camFollow);
-
-		//FlxG.camera.follow(camFollow, null, 0.06);
-
-		//camFollow.setPosition(640, 150.5);
-
 		for (i in 0...optionShit.length)
 		{
 			var currentOptionShit = optionShit[i];
@@ -262,25 +186,17 @@ class MainMenuState extends MusicBeatState
 			menuItem.setGraphicSize(128, 128);
 			menuItem.ID = i;
 			menuItem.updateHitbox();
-			//menuItem.screenCenter(Y);
-			//menuItem.alpha = 0; //TESTING
 			menuItems.add(menuItem);
 			menuItem.scrollFactor.set(0, 1);
-			if (firstStart)
-			{
+			if (firstStart) {
 				FlxTween.tween(menuItem, {x: FlxG.width / 2 - 450 + (i * 160)}, 1 + (i * 0.25), {
 					ease: FlxEase.expoInOut,
-					onComplete: function(flxTween:FlxTween)
-					{
+					onComplete: function(flxTween:FlxTween) {
 						finishedFunnyMove = true;
-						//menuItem.screenCenter(Y);
 						changeItem();
 					}
 				});
-			}
-			else
-			{
-				//menuItem.screenCenter(Y);
+			} else {
 				menuItem.x = FlxG.width / 2 - 450 + (i * 160);
 				changeItem();
 			}
@@ -304,13 +220,9 @@ class MainMenuState extends MusicBeatState
 
 		FlxTween.tween(pressR, {alpha: 1}, 1);
 
-		menuItems.forEach(function(spr:FlxSprite)
-		{
+		menuItems.forEach(function(spr:FlxSprite) {
 			spr.y = FlxG.height / 2 + 130;
 		});
-
-		// NG.core.calls.event.logEvent('swag').send();
-		
 
 		super.create();
 	}
@@ -319,12 +231,6 @@ class MainMenuState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
-		#if SHADERS_ENABLED
-		if (voidShader != null)
-		{
-			voidShader.shader.uTime.value[0] += elapsed;
-		}
-		#end
 		if (FlxG.sound.music.volume < 0.8)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
@@ -358,8 +264,7 @@ class MainMenuState extends MusicBeatState
 				FlxTween.tween(black, {alpha: 0.6}, 0.3);
 
 				FlxTween.tween(prompt, {alpha: 1}, 0.5, {
-					onComplete: function(tween:FlxTween)
-					{
+					onComplete: function(tween:FlxTween) {
 						prompt.canInteract = true;
 					}
 				});
@@ -371,8 +276,7 @@ class MainMenuState extends MusicBeatState
 					}});
 					prompt.canInteract = false;
 					FlxTween.tween(prompt, {alpha: 0}, 0.5, {
-						onComplete: function(tween:FlxTween)
-						{
+						onComplete: function(tween:FlxTween) {
 							remove(prompt);
 							FlxG.mouse.visible = false;
 							canInteract = true;
@@ -429,8 +333,7 @@ class MainMenuState extends MusicBeatState
 						{
 							FlxTween.tween(spr, {alpha: 0}, 1.3, {
 								ease: FlxEase.quadOut,
-								onComplete: function(twn:FlxTween)
-								{
+								onComplete: function(twn:FlxTween) {
 									spr.kill();
 								}
 							});
@@ -442,20 +345,11 @@ class MainMenuState extends MusicBeatState
 								var daChoice:String = optionShit[curSelected];
 								switch (daChoice)
 								{
-									case 'story mode':
-										FlxG.switchState(new StoryMenuState());
-									case 'freeplay' | 'freeplay glitch':
-										if (FlxG.random.bool(0.05))
-										{
-											fancyOpenURL("https://www.youtube.com/watch?v=Z7wWa1G9_30%22");
-										}
-										FlxG.switchState(new FreeplayState());
-									case 'options':
-										FlxG.switchState(new OptionsMenu());
-									case 'ost':
-										FlxG.switchState(new MusicPlayerState());
-									case 'credits':
-										FlxG.switchState(new CreditsMenuState());
+									case 'story mode': FlxG.switchState(new StoryMenuState());
+									case 'freeplay' | 'freeplay glitch': FlxG.switchState(new FreeplayState());
+									case 'options': FlxG.switchState(new OptionsMenu());
+									case 'ost': FlxG.switchState(new MusicPlayerState());
+									case 'credits': FlxG.switchState(new CreditsMenuState());
 								}
 							});
 						}
@@ -465,7 +359,6 @@ class MainMenuState extends MusicBeatState
 		}
 
 		super.update(elapsed);
-
 	}
 
 	override function beatHit()
@@ -492,7 +385,6 @@ class MainMenuState extends MusicBeatState
 			if (spr.ID == curSelected && finishedFunnyMove)
 			{
 				spr.animation.play('selected');
-				//camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y);
 			}
 			//spr.screenCenter(Y);
 			spr.updateHitbox();
@@ -507,12 +399,9 @@ class MainMenuState extends MusicBeatState
 	{
 		var date = Date.now();
 		var chance:Int = FlxG.random.int(0, bgPaths.length - 1);
-		if(date.getMonth() == 3 && date.getDate() == 1)
-		{
+		if(date.getMonth() == 3 && date.getDate() == 1) {
 			return Paths.image('backgrounds/ramzgaming');
-		}
-		else
-		{
+		} else {
 			return Paths.image('backgrounds/${bgPaths[chance]}');
 		}
 	}
@@ -623,20 +512,7 @@ class Prompt extends FlxSpriteGroup
 		{
 			select(texts[curSelected]);
 		}
-		
-		/*
-		if (FlxG.mouse.overlaps(noText) && curSelected != texts.indexOf(noText))
-		{
-			FlxG.sound.play(Paths.sound('scrollMenu'));
-			curSelected = texts.indexOf(noText);
-			updateText();
-		}
-		if (FlxG.mouse.overlaps(yesText) && curSelected != texts.indexOf(yesText))
-		{
-			FlxG.sound.play(Paths.sound('scrollMenu'));
-			curSelected = texts.indexOf(yesText);
-			updateText();
-		}*/
+
 		if (FlxG.mouse.justMoved)
 		{
 			for (i in 0...texts.length)
@@ -679,14 +555,10 @@ class Prompt extends FlxSpriteGroup
 		FlxG.sound.play(Paths.sound('confirmMenu'));
 		var select = texts.indexOf(text);
 
-		FlxFlicker.flicker(text, 1.1, 0.1, false, false, function(flicker:FlxFlicker)
-		{
-			switch (select)
-			{
-				case 0:
-					yesFunc();
-				case 1:
-					noFunc();
+		FlxFlicker.flicker(text, 1.1, 0.1, false, false, function(flicker:FlxFlicker) {
+			switch (select) {
+				case 0: yesFunc();
+				case 1: noFunc();
 			}
 		});
 	}

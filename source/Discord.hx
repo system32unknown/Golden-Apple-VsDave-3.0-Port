@@ -19,7 +19,6 @@ class DiscordClient
 		{
 			DiscordRpc.process();
 			sleep(2);
-			//trace("Discord Client Update");
 		}
 
 		DiscordRpc.shutdown();
@@ -31,7 +30,7 @@ class DiscordClient
 			details: "In the Menus",
 			state: null,
 			largeImageKey: 'icon_logo',
-			largeImageText: "Vs Dave & Bambi"
+			largeImageText: "Golden Apple (VsDave 3.0)"
 		});
 	}
 
@@ -67,13 +66,11 @@ class DiscordClient
 			details: details,
 			state: state,
 			largeImageKey: 'icon_logo',
-			largeImageText: "Vs Dave & Bambi",
+			largeImageText: "Golden Apple (VsDave 3.0)",
 			smallImageKey : smallImageKey,
 			// Obtained times are in milliseconds so they are divided so Discord can use it
 			startTimestamp : Std.int(startTimestamp / 1000),
             endTimestamp : Std.int(endTimestamp / 1000)
 		});
-
-		//trace('Discord RPC Updated. Arguments: $details, $state, $smallImageKey, $hasStartTimestamp, $endTimestamp');
 	}
 }

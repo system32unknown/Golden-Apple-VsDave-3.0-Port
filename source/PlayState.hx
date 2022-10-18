@@ -2,95 +2,48 @@ package; // "Most hard-coded FNF mod ever!!!!!!!!!!" - p0kk0 on GameBanana(https
 
 import CreditsMenuState.CreditsText;
 import TerminalCheatingState.TerminalText;
-import flixel.graphics.frames.FlxFrame;
-import flixel.graphics.FlxGraphic;
-import flixel.addons.transition.Transition;
-import flixel.group.FlxGroup;
 import sys.FileSystem;
-import flixel.util.FlxArrayUtil;
-import flixel.addons.plugin.FlxScrollingText;
 import Alphabet;
-import flixel.addons.display.FlxBackdrop;
-import openfl.display.ShaderParameter;
-import openfl.display.Graphics;
-import flixel.group.FlxSpriteGroup;
-import lime.tools.ApplicationData;
-import flixel.effects.particles.FlxParticle;
-import hscript.Printer;
-import openfl.desktop.Clipboard;
-import flixel.system.debug.Window;
-#if desktop
-import sys.io.File;
-import openfl.display.BitmapData;
-#end
-import flixel.system.FlxBGSprite;
-import flixel.tweens.misc.ColorTween;
-import flixel.math.FlxRandom;
-import openfl.net.FileFilter;
-import openfl.filters.BitmapFilter;
 import Shaders.PulseEffect;
-import Shaders.BlockedGlitchShader;
 import Shaders.BlockedGlitchEffect;
-import Shaders.DitherEffect;
 import Section.SwagSection;
 import Song.SwagSong;
-import flixel.FlxBasic;
+import flixel.graphics.FlxGraphic;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.group.FlxGroup;
 import flixel.FlxCamera;
 import flixel.FlxG;
-import flixel.FlxGame;
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.FlxSubState;
-import flixel.addons.display.FlxGridOverlay;
-import flixel.addons.effects.FlxTrail;
-import flixel.addons.effects.FlxTrailArea;
-import flixel.addons.effects.chainable.FlxEffectSprite;
-import flixel.addons.effects.chainable.FlxWaveEffect;
+import flixel.addons.display.FlxBackdrop;
+import flixel.addons.transition.Transition;
 import flixel.addons.transition.FlxTransitionableState;
-import flixel.graphics.atlas.FlxAtlas;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
-import flixel.math.FlxRect;
-import flixel.system.FlxSound;
-import flixel.text.FlxText;
+import flixel.math.FlxRandom;
+import flixel.tweens.misc.ColorTween;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
-import flixel.util.FlxCollision;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import flixel.util.FlxStringUtil;
 import flixel.util.FlxTimer;
+import flixel.system.FlxSound;
+import flixel.text.FlxText;
 import haxe.Json;
 import lime.utils.Assets;
 import openfl.display.BlendMode;
-import openfl.display.StageQuality;
 import openfl.filters.ShaderFilter;
-import flash.system.System;
-import flixel.util.FlxSpriteUtil;
-import flixel.effects.particles.FlxEmitter;
-import flixel.effects.particles.FlxParticle;
-import flixel.addons.effects.chainable.IFlxEffect;
 #if desktop
 import Discord.DiscordClient;
 #end
 
 #if windows
 import sys.io.File;
-import sys.io.Process;
 import lime.app.Application;
 #end
-
-import flixel.system.debug.Window;
-import lime.app.Application;
-import openfl.Lib;
-import openfl.geom.Matrix;
-import lime.ui.Window;
-import openfl.geom.Rectangle;
-import openfl.display.Sprite;
 
 using StringTools;
 
@@ -106,13 +59,10 @@ class PlayState extends MusicBeatState
 	public static var storyWeek:Int = 0;
 	public static var storyPlaylist:Array<String> = [];
 	public static var storyDifficulty:Int = 1;
-	public static var weekSong:Int = 0;
 	public static var shits:Int = 0;
 	public static var bads:Int = 0;
 	public static var goods:Int = 0;
 	public static var sicks:Int = 0;
-
-	public var ExpungedWindowCenterPos:FlxPoint = new FlxPoint(0,0);
 
 	public var dadCombo:Int = 0;
 	public static var globalFunny:CharacterFunnyEffect = CharacterFunnyEffect.None;
@@ -142,25 +92,18 @@ class PlayState extends MusicBeatState
 	public static var screenshader:Shaders.PulseEffect = new PulseEffect();
 	public static var lazychartshader:Shaders.GlitchEffect = new Shaders.GlitchEffect();
 	public static var blockedShader:BlockedGlitchEffect;
-	public var dither:DitherEffect = new DitherEffect();
 	#end
 
 	public var UsingNewCam:Bool = false;
-
 	public var elapsedtime:Float = 0;
 
-	public var elapsedexpungedtime:Float = 0;
-
 	var focusOnDadGlobal:Bool = true;
-
 	var funnyFloatyBoys:Array<String> = ['dave-angey', 'bambi-3d', 'expunged', 'bambi-unfair', 'exbungo', 'dave-festival-3d', 'dave-3d-recursed', 'bf-3d'];
 
 	var storyDifficultyText:String = "";
 	var iconRPC:String = "";
 	var detailsText:String = "";
 	var detailsPausedText:String = "";
-
-	var boyfriendOldIcon:String = 'bf-old';
 
 	public var vocals:FlxSound;
 	public var exbungo_funny:FlxSound;
@@ -175,8 +118,6 @@ class PlayState extends MusicBeatState
 	private var notes:FlxTypedGroup<Note>;
 	private var unspawnNotes:Array<Note> = [];
 
-	private var curSection:Int = 0;
-
 	private var camFollow:FlxObject;
 
 	var nightColor:FlxColor = 0xFF878787;
@@ -184,7 +125,6 @@ class PlayState extends MusicBeatState
 
 	private static var prevCamFollow:FlxObject;
 	public static var recursedStaticWeek:Bool;
-	
 
 	private var strumLine:FlxSprite;
 	private var strumLineNotes:FlxTypedGroup<StrumNote>;
@@ -192,7 +132,6 @@ class PlayState extends MusicBeatState
 	public var dadStrums:FlxTypedGroup<StrumNote>;
 
 	private var noteLimbo:Note;
-
 	private var noteLimboFrames:Int;
 
 	public var camZooming:Bool = false;
@@ -210,8 +149,6 @@ class PlayState extends MusicBeatState
 	private var totalPlayed:Int = 0;
 	private var ss:Bool = false;
 
-	private var windowSteadyX:Float;
-
 	public static var eyesoreson = true;
 
 	private var STUPDVARIABLETHATSHOULDNTBENEEDED:FlxSprite;
@@ -222,8 +159,6 @@ class PlayState extends MusicBeatState
 	private var generatedMusic:Bool = false;
 	public var shakeCam:Bool = false;
 	private var startingSong:Bool = false;
-
-	public var TwentySixKey:Bool = false;
 
 	private var iconP1:HealthIcon;
 	private var iconP2:HealthIcon;
@@ -239,13 +174,7 @@ class PlayState extends MusicBeatState
 	
 	var notestuffs:Array<String> = ['LEFT', 'DOWN', 'UP', 'RIGHT'];
 	var notestuffsGuitar:Array<String> = ['LEFT', 'DOWN', 'MIDDLE', 'UP', 'RIGHT'];
-	var fc:Bool = true;
 
-	#if SHADERS_ENABLED
-	var wiggleShit:WiggleEffect = new WiggleEffect();
-	#end
-
-	var talking:Bool = true;
 	var songScore:Int = 0;
 
 	var scoreTxt:FlxText;
@@ -267,15 +196,12 @@ class PlayState extends MusicBeatState
 
 	var inCutscene:Bool = false;
 
-	public var crazyBatch:String = "shutdown /r /t 0";
-
 	public var backgroundSprites:FlxTypedGroup<BGSprite> = new FlxTypedGroup<BGSprite>();
 	var revertedBG:FlxTypedGroup<BGSprite> = new FlxTypedGroup<BGSprite>();
 	var canFloat:Bool = true;
 
 	var possibleNotes:Array<Note> = [];
 
-	var glitch:FlxSprite;
 	var tweenList:Array<FlxTween> = new Array<FlxTween>();
 	var pauseTweens:Array<FlxTween> = new Array<FlxTween>();
 
@@ -298,7 +224,6 @@ class PlayState extends MusicBeatState
 	public var creditsPopup:CreditsPopUp;
 	public var blackScreen:FlxSprite;
 
-
 	//bg stuff
 	var baldi:BGSprite;
 	var spotLight:FlxSprite;
@@ -309,7 +234,6 @@ class PlayState extends MusicBeatState
 	var crowdPeople:FlxTypedGroup<BGSprite> = new FlxTypedGroup<BGSprite>();
 	
 	var interdimensionBG:BGSprite;
-	var currentInterdimensionBG:String;
 	var nimbiLand:BGSprite;
 	var nimbiSign:BGSprite;
 	var flyingBgChars:FlxTypedGroup<FlyingBGChar> = new FlxTypedGroup<FlyingBGChar>();
@@ -335,14 +259,8 @@ class PlayState extends MusicBeatState
 	var train:BGSprite;
 	var trainSpeed:Float;
 
-	var vcr:VCRDistortionShader;
-
 	var place:BGSprite;
 	var stageCheck:String = 'stage';
-
-	// FUCKING UHH particles
-	var emitter:FlxEmitter;
-	var smashPhone:Array<Int> = new Array<Int>();
 
 	//recursed
 	var darkSky:BGSprite;
@@ -394,17 +312,6 @@ class PlayState extends MusicBeatState
 	//explpit
 	var expungedBG:BGSprite;
 	public static var scrollType:String;
-	var preDadPos:FlxPoint = new FlxPoint();
-
-	//window stuff
-	public static var window:Window;
-	var expungedScroll = new Sprite();
-	var expungedSpr = new Sprite();
-	var windowProperties:Array<Dynamic> = new Array<Dynamic>();
-	var expungedWindowMode:Bool = false;
-	var expungedOffset:FlxPoint = new FlxPoint();
-	var expungedMoving:Bool = true;
-	var lastFrame:FlxFrame;
 
 	//indignancy
 	var vignette:FlxSprite;
@@ -548,7 +455,7 @@ class PlayState extends MusicBeatState
 			+ " | Misses: "
 			+ misses, iconRPC);
 		#end
-		// var gameCam:FlxCamera = FlxG.camera;
+		
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
@@ -2076,7 +1983,6 @@ class PlayState extends MusicBeatState
 				insert(members.indexOf(flyingBgChars), nimbiSign);
 		}
 		voidShader(interdimensionBG);
-		currentInterdimensionBG = type;
 	}
 	function startCountdown():Void
 	{
@@ -2085,7 +1991,6 @@ class PlayState extends MusicBeatState
 		generateStaticArrows(0);
 		generateStaticArrows(1);
 
-		talking = false;
 		startedCountdown = true;
 		Conductor.songPosition = 0;
 		Conductor.songPosition -= Conductor.crochet * 5;
@@ -2378,8 +2283,6 @@ class PlayState extends MusicBeatState
 					trainSpeed = newValue;
 					train.animation.curAnim.frameRate = Std.int(FlxMath.lerp(0, 24, (trainSpeed / 30)));
 				});
-			case 'supernovae' | 'glitch' | 'master':
-				Application.current.window.title = banbiWindowNames[new FlxRandom().int(0, banbiWindowNames.length - 1)];
 			case 'exploitation':
 				blackScreen = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
 				blackScreen.cameras = [camHUD];
@@ -2387,9 +2290,6 @@ class PlayState extends MusicBeatState
 				blackScreen.scrollFactor.set();
 				blackScreen.alpha = 0;
 				add(blackScreen);
-					
-				Application.current.window.title = "[DATA EXPUNGED]";
-				Application.current.window.setIcon(lime.graphics.Image.fromFile("art/icons/iconAAAA.png"));
 			case 'vs-dave-rap' | 'vs-dave-rap-two':
 				FlxTween.tween(blackScreen, {alpha: 0}, 3, {onComplete: function(tween:FlxTween)
 				{
@@ -3454,9 +3354,6 @@ class PlayState extends MusicBeatState
 					#end
 					FlxG.switchState(new PlayState());
 					return;
-				case 'kabunga':
-					fancyOpenURL("https://benjaminpants.github.io/muko_firefox/index.html"); //banger game
-					System.exit(0);
 				case 'vs-dave-rap':
 					PlayState.SONG = Song.loadFromJson("vs-dave-rap-two");
 					FlxG.save.data.vsDaveRapTwoFound = true;
@@ -3676,9 +3573,6 @@ class PlayState extends MusicBeatState
 				{
 					switch (SONG.song.toLowerCase())
 					{
-						case 'blocked' | 'corn-theft' | 'maze':
-							FlxG.openURL("https://www.youtube.com/watch?v=eTJOdgDzD64");
-							System.exit(0);
 						default:
 							if (shakeCam)
 							{
@@ -3905,65 +3799,6 @@ class PlayState extends MusicBeatState
 				BAMBICUTSCENEICONHURHURHUR.y += stupidy;
 			}
 		}
-
-		if (window == null)
-		{
-			if (expungedWindowMode)
-			{
-				#if windows
-				popupWindow();
-				#end
-			}
-			else
-			{
-				return;
-			}
-		}
-		else if (expungedWindowMode)
-		{
-			var display = Application.current.window.display.currentMode;
-
-			@:privateAccess
-			var dadFrame = dad._frame;
-			if (dadFrame == null || dadFrame.frame == null) return; // prevent crashes (i hope)
-	  
-			var rect = new Rectangle(dadFrame.frame.x, dadFrame.frame.y, dadFrame.frame.width, dadFrame.frame.height);
-
-			expungedScroll.scrollRect = rect;
-
-			window.x = Std.int(expungedOffset.x);
-			window.y = Std.int(expungedOffset.y);
-
-			if (!expungedMoving)
-			{
-				elapsedexpungedtime += elapsed * 9;
-
-				var screenwidth = Application.current.window.display.bounds.width;
-				var screenheight = Application.current.window.display.bounds.height;
-
-				var toy = ((-Math.sin((elapsedexpungedtime / 9.5) * 2) * 30 * 5.1) / 1080) * screenheight;
-				var tox = ((-Math.cos((elapsedexpungedtime / 9.5)) * 100) / 1980) * screenwidth;
-
-				expungedOffset.x = ExpungedWindowCenterPos.x + tox;
-				expungedOffset.y = ExpungedWindowCenterPos.y + toy;
-
-				//center
-				Application.current.window.y = Math.round(((screenheight / 2) - (720 / 2)) + (Math.sin((elapsedexpungedtime / 30)) * 80));
-				Application.current.window.x = Std.int(windowSteadyX);
-				Application.current.window.width = 1280;
-				Application.current.window.height = 720;
-			}
-
-			if (lastFrame != null && dadFrame != null && lastFrame.name != dadFrame.name)
-			{
-				expungedSpr.graphics.clear();
-				generateWindowSprite();
-				lastFrame = dadFrame;
-			}
-
-			expungedScroll.x = (((dadFrame.offset.x) - (dad.offset.x)) * expungedScroll.scaleX) + 80;
-			expungedScroll.y = (((dadFrame.offset.y) - (dad.offset.y)) * expungedScroll.scaleY);
-		}
 	}
 	
 
@@ -4139,15 +3974,6 @@ class PlayState extends MusicBeatState
 				|| characteroverride == "bf" ? "bf" : characteroverride);
 			#end
 		}
-
-		#if windows
-		if (window != null)
-		{
-			window.close();
-			expungedWindowMode = false;
-			window = null;
-		}
-		#end
 
 		// Song Character Unlocks (Story Mode)
 		if (isStoryMode)
@@ -4659,12 +4485,6 @@ class PlayState extends MusicBeatState
 			}
 			
 		}
-		curSection += 1;
-	}
-
-	public function NearlyEquals(value1:Float, value2:Float, unimportantDifference:Float = 10):Bool
-	{
-		return Math.abs(FlxMath.roundDecimal(value1, 1) - FlxMath.roundDecimal(value2, 1)) < unimportantDifference;
 	}
 
 	var upHold:Bool = false;
@@ -4681,17 +4501,8 @@ class PlayState extends MusicBeatState
 		var left = controls.LEFT;
 
 		var key5 = controls.KEY5 && (SONG.song.toLowerCase() == 'polygonized' || SONG.song.toLowerCase() == 'interdimensional') && localFunny != CharacterFunnyEffect.Recurser;
-
-		/*if (pressingKey5Global != key5)
-		{
-			pressingKey5Global = key5;
-			regenerateStaticArrows(1, false);
-		}*/
 		
-		playerStrums.forEach(function(strum:StrumNote)
-		{
-			//trace('global: $pressingKey5Global, none global: ${strum.pressingKey5}');
-			
+		playerStrums.forEach(function(strum:StrumNote) {
 			strum.pressingKey5 = key5;
 		});
 
@@ -4753,7 +4564,6 @@ class PlayState extends MusicBeatState
 			noteLimbo = null;
 		}
 
-		// FlxG.watch.addQuick('asdfa', upP);
 		if ((upP || rightP || downP || leftP) && !boyfriend.stunned && generatedMusic)
 		{
 			boyfriend.holdTimer = 0;
@@ -5046,10 +4856,6 @@ class PlayState extends MusicBeatState
 
 	function updateAccuracy()
 	{
-		if (misses > 0 || accuracy < 96)
-			fc = false;
-		else
-			fc = true;
 		totalPlayed += 1;
 		accuracy = totalNotesHit / totalPlayed * 100;
 	}
@@ -6297,17 +6103,6 @@ class PlayState extends MusicBeatState
 					case 1280:
 						shakeCam = true;
 						FlxG.camera.zoom -= 0.2;
-
-						windowProperties = [
-							Application.current.window.x,
-							Application.current.window.y,
-							Application.current.window.width,
-							Application.current.window.height
-						];
-
-						#if windows
-						popupWindow();
-						#end
 						
 						modchart = ExploitationModchartType.Figure8;
 						dadStrums.forEach(function(strum:StrumNote)
@@ -6351,18 +6146,6 @@ class PlayState extends MusicBeatState
 						{
 							strum.resetX();
 						});
-
-					case 2080:
-						#if windows
-						if (window != null)
-						{
-							window.close();
-							expungedWindowMode = false;
-							window = null;
-							FlxTween.tween(Application.current.window, {x: windowProperties[0], y: windowProperties[1], width: windowProperties[2], height: windowProperties[3]}, 1, {ease: FlxEase.circInOut});
-							FlxTween.tween(iconP2, {alpha: 0}, 1, {ease: FlxEase.bounceOut});
-						}
-						#end
 					case 2083:
 						PlatformUtil.sendWindowsNotification("Anticheat.dll", "Threat expunged.dat successfully contained.");
 				}
@@ -6920,11 +6703,6 @@ class PlayState extends MusicBeatState
 					}
 			}
 		}
-
-		// FlxG.log.add('change bpm' + SONG.notes[Std.int(curStep / 16)].changeBPM);
-		#if SHADERS_ENABLED
-		wiggleShit.update(Conductor.crochet);
-		#end
 		
 		if (curBeat % gfSpeed == 0)
 		{
@@ -6963,10 +6741,6 @@ class PlayState extends MusicBeatState
 			{
 				crowdPerson.animation.play('idle', true);
 			});
-		}
-		if (curBeat % 2 == 0 && tristan != null)
-		{
-			tristan.animation.play(curTristanAnim);
 		}
 		if (curBeat % 4 == 0 && spotLightPart && spotLight != null)
 		{
@@ -7336,16 +7110,6 @@ class PlayState extends MusicBeatState
 	}
 	function gameOver()
 	{
-		#if windows
-		if (window != null)
-		{
-			expungedWindowMode = false;
-			window.close();
-			//x,y, width, height
-			FlxTween.tween(Application.current.window, {x: windowProperties[0], y: windowProperties[1], width: windowProperties[2], height: windowProperties[3]}, 1, {ease: FlxEase.circInOut});
-
-		}
-		#end
 		var deathSkinCheck = formoverride == "bf" || formoverride == "none" ? SONG.player1 : isRecursed ? boyfriend.curCharacter : formoverride;
 		var chance = FlxG.random.int(0, 99);
 		if (chance <= 2 && eyesoreson)
@@ -7804,97 +7568,6 @@ class PlayState extends MusicBeatState
 			sign.setPosition(FlxG.width + sign.width, 450);
 		}
 	}
-
-	function popupWindow()
-	{
-		var screenwidth = Application.current.window.display.bounds.width;
-		var screenheight = Application.current.window.display.bounds.height;
-
-		// center
-		Application.current.window.x = Std.int((screenwidth / 2) - (1280 / 2));
-		Application.current.window.y = Std.int((screenheight / 2) - (720 / 2));
-		Application.current.window.width = 1280;
-		Application.current.window.height = 720;
-
-		window = Application.current.createWindow({
-			title: "expunged.dat",
-			width: 800,
-			height: 800,
-			borderless: true,
-			alwaysOnTop: true
-		});
-
-		window.stage.color = 0x00010101;
-		@:privateAccess
-		window.stage.addEventListener("keyDown", FlxG.keys.onKeyDown);
-		@:privateAccess
-		window.stage.addEventListener("keyUp", FlxG.keys.onKeyUp);
-		#if linux
-		//testing stuff
-		window.stage.color = 0xff000000;
-		trace('BRAP');
-		#end
-		PlatformUtil.getWindowsTransparent();
-
-		preDadPos = dad.getPosition();
-		dad.x = 0;
-		dad.y = 0;
-
-		FlxG.mouse.useSystemCursor = true;
-
-		generateWindowSprite();
-
-		expungedScroll.scrollRect = new Rectangle();
-		window.stage.addChild(expungedScroll);
-		expungedScroll.addChild(expungedSpr);
-		expungedScroll.scaleX = 0.5;
-		expungedScroll.scaleY = 0.5;
-
-		expungedOffset.x = Application.current.window.x;
-		expungedOffset.y = Application.current.window.y;
-
-		dad.visible = false;
-
-		var windowX = Application.current.window.x + ((Application.current.window.display.bounds.width) * 0.140625);
-
-		windowSteadyX = windowX;
-
-		FlxTween.tween(expungedOffset, {x: -20}, 2, {ease: FlxEase.elasticOut});
-
-		FlxTween.tween(Application.current.window, {x: windowX}, 2.2, {
-			ease: FlxEase.elasticOut,
-			onComplete: function(tween:FlxTween)
-			{
-				ExpungedWindowCenterPos.x = expungedOffset.x;
-				ExpungedWindowCenterPos.y = expungedOffset.y;
-				expungedMoving = false;
-			}
-		});
-
-		Application.current.window.onClose.add(function()
-		{
-			if (window != null)
-			{
-				window.close();
-			}
-		}, false, 100);
-
-		Application.current.window.focus();
-		expungedWindowMode = true;
-
-		@:privateAccess
-		lastFrame = dad._frame;
-	}
-
-	function generateWindowSprite()
-	{
-		var m = new Matrix();
-		m.translate(0, 0);
-		expungedSpr.graphics.beginBitmapFill(dad.pixels, m);
-		expungedSpr.graphics.drawRect(0, 0, dad.pixels.width, dad.pixels.height);
-		expungedSpr.graphics.endFill();
-	}
-	
 }
 enum ExploitationModchartType
 {

@@ -36,10 +36,8 @@ class Main extends Sprite
 	{
 		super();
 
-		if (stage != null)
-			init();
-		else
-			addEventListener(Event.ADDED_TO_STAGE, init);
+		if (stage != null) init();
+		else addEventListener(Event.ADDED_TO_STAGE, init);
 	}
 
 	private function init(?E:Event):Void
@@ -73,12 +71,5 @@ class Main extends Sprite
 
 		initialState = StartStateSelector;
 		addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
-
-		#if !mobile
-		fps = new FpsDisplay(10, 3, 0xFFFFFF);
-		var fpsFormat = new TextFormat("Comic Sans MS Bold", 15, 0xFFFFFF, true);
-		fps.defaultTextFormat = fpsFormat;
-		addChild(fps);
-		#end
 	}
 }

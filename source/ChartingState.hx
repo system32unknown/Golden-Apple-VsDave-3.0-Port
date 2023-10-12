@@ -25,7 +25,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.ui.FlxSpriteButton;
@@ -132,8 +132,7 @@ class ChartingState extends MusicBeatState
 				player2: 'dad',
 				stage: 'stage',
 				speed: 1,
-				gf: "gf",
-				validScore: false
+				gf: "gf"
 			};
 		}
 
@@ -150,7 +149,7 @@ class ChartingState extends MusicBeatState
 		curRenderedSustains = new FlxTypedGroup<FlxSprite>();
 
 		FlxG.mouse.visible = true;
-		FlxG.save.bind('funkin', 'ninjamuffin99');
+		FlxG.save.bind('funkin', 'goldenapple');
 
 		tempBpm = _song.bpm;
 
@@ -1498,24 +1497,6 @@ class ChartingState extends MusicBeatState
 
 	function loadJson(song:String):Void
 	{
-		switch (song.toLowerCase())
-		{
-			case 'supernovae' | 'glitch'  | 'master' | 'roofs':
-				//video doesnt work fix this later
-				var deathSound:FlxSound = new FlxSound();
-				deathSound.loadEmbedded(Paths.soundRandom('missnote', 1, 3));
-				deathSound.volume = FlxG.random.float(0.6, 1);
-				deathSound.play();
-				return;
-			case 'cheating' | 'unfairness' | 'exploitation':
-				FlxG.switchState(new YouCheatedSomeoneIsComing()); // YOU THINK YOU ARE SO CLEVER DON'T YOU? HAHA FUCK YOU
-			case 'recursed':
-				hahaFunnyRecursed();
-				
-			case 'opposition':
-				System.exit(0);
-				FlxG.openURL('https://whatsmyip.com');
-		}
 		PlayState.SONG = Song.loadFromJson(song.toLowerCase());
 		FlxG.resetState();
 	}

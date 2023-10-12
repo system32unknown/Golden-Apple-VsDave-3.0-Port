@@ -14,7 +14,7 @@ import flixel.util.FlxColor;
 import Discord.DiscordClient;
 #end
 
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound;
 
 using StringTools;
 
@@ -409,11 +409,11 @@ class MainMenuState extends MusicBeatState
 	{
 		for (save in ['funkin', 'controls', 'language'])
 		{
-			FlxG.save.bind(save, 'ninjamuffin99');
+			FlxG.save.bind(save, 'goldenapple');
 			FlxG.save.erase();
 			FlxG.save.flush();
 		}
-		FlxG.save.bind('funkin', 'ninjamuffin99');
+		FlxG.save.bind('funkin', 'goldenapple');
 
 		Highscore.songScores = new Map();
 		Highscore.songChars = new Map();

@@ -12,7 +12,7 @@ import flixel.group.FlxGroup;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -45,19 +45,12 @@ class TitleState extends MusicBeatState
 
 	var wackyImage:FlxSprite;
 
-	var fun:Int;
 	var awaitingExploitation:Bool;
 	var eye:FlxSprite;
 	var loopEyeTween:FlxTween;
 
 	override public function create():Void
 	{		
-		fun = FlxG.random.int(0, 999);
-		if(fun == 1)
-		{
-			LoadingState.loadAndSwitchState(new SusState());
-		}
-
 		PlayerSettings.init();
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
@@ -70,7 +63,7 @@ class TitleState extends MusicBeatState
 
 		super.create();
 
-		FlxG.save.bind('funkin', 'ninjamuffin99');
+		FlxG.save.bind('funkin', 'goldenapple');
 
 		SaveDataHandler.initSave();
 		LanguageManager.init();
@@ -101,19 +94,10 @@ class TitleState extends MusicBeatState
 				StoryMenuState.weekUnlocked[0] = true;
 		}
 		
-
-		awaitingExploitation = FlxG.save.data.exploitationState == 'awaiting';
-
-		#if FREEPLAY
-		FlxG.switchState(new FreeplayState());
-		#elseif CHARTING
-		FlxG.switchState(new ChartingState());
-		#else
 		new FlxTimer().start(1, function(tmr:FlxTimer)
 		{
 			startIntro();
 		});		
-		#end
 	}
 
 	var logoBl:FlxSprite;
@@ -137,7 +121,7 @@ class TitleState extends MusicBeatState
 			transIn = FlxTransitionableState.defaultTransIn;
 			transOut = FlxTransitionableState.defaultTransOut;
 
-			FlxG.sound.playMusic(Paths.music(awaitingExploitation ? 'freakyMenu_ex' : 'freakyMenu'), 0);			
+			FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);			
 			FlxG.sound.music.fadeIn(4, 0, 0.7);
 		}
 
@@ -148,53 +132,19 @@ class TitleState extends MusicBeatState
 		add(bg);
 
 		logoBl = new FlxSprite(-25, -50);
-		if (!awaitingExploitation)
-		{
-			logoBl.frames = Paths.getSparrowAtlas('ui/logoBumpin');
-		}
-		else
-		{
-			logoBl.frames = Paths.getSparrowAtlas('ui/logoBumpinExpunged');
-			Application.current.window.title = "Friday Night Funkin' | VS. EXPUNGED";
-		}
+		logoBl.frames = Paths.getSparrowAtlas('ui/logoBumpin');
 		logoBl.antialiasing = true;
 		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
 		logoBl.setGraphicSize(Std.int(logoBl.width * 1.2));
 		logoBl.animation.play('bump');
 		logoBl.updateHitbox();
-		if (awaitingExploitation)
-		{
-			logoBl.screenCenter(X);
 
-			eye = new FlxSprite(0, 0).loadGraphic(Paths.image('mainMenu/eye'));
-			eye.screenCenter();
-			eye.antialiasing = false;
-			eye.alpha = 0;
-			add(eye);
-
-			loopEyeTween = FlxTween.tween(eye, {alpha: 1}, 1, {
-				onComplete: function(tween:FlxTween)
-				{
-					FlxTween.tween(eye, {alpha: 0}, 1, {
-						onComplete: function(tween:FlxTween)
-						{
-							loopEyeTween.start();
-						}
-					});
-				},
-				type: PERSIST
-			});
-		}
-		
-		if (!awaitingExploitation)
-		{
-			gfDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
-			gfDance.frames = Paths.getSparrowAtlas('ui/gfDanceTitle');
-			gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
-			gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
-			gfDance.antialiasing = true;
-			add(gfDance);
-		}
+		gfDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
+		gfDance.frames = Paths.getSparrowAtlas('ui/gfDanceTitle');
+		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
+		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+		gfDance.antialiasing = true;
+		add(gfDance);
 		add(logoBl);
 
 		titleText = new FlxSprite(100, FlxG.height * 0.8);
@@ -307,9 +257,8 @@ class TitleState extends MusicBeatState
 
 			transitioning = true;
 
-			new FlxTimer().start(2, function(tmr:FlxTimer)
-			{
-				FlxG.switchState(FlxG.save.data.alreadyGoneToWarningScreen && FlxG.save.data.exploitationState != 'playing' ? new MainMenuState() : new OutdatedSubState());
+			new FlxTimer().start(2, function(tmr:FlxTimer) {
+				FlxG.switchState(FlxG.save.data.alreadyGoneToWarningScreen ? new MainMenuState() : new OutdatedSubState());
 			});
 		}
 

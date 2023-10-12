@@ -1,6 +1,6 @@
 package;
 
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound;
 import flixel.system.FlxAssets.FlxSoundAsset;
 import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;

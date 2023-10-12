@@ -51,7 +51,6 @@ class StoryMenuState extends MusicBeatState
 		new Week(['Shredder', 'Greetings', 'Interdimensional', 'Rano'], LanguageManager.getTextString('story_festivalWeek'), 0xFF800080, 'festival'), // FESTEVAL
 	];
 
-	var awaitingExploitation:Bool;
 	static var awaitingToPlayMasterWeek:Bool;
 
 	var weekBanners:Array<FlxSprite> = new Array<FlxSprite>();
@@ -59,8 +58,6 @@ class StoryMenuState extends MusicBeatState
 
 	override function create()
 	{
-		awaitingExploitation = (FlxG.save.data.exploitationState == 'awaiting');
-
 		if (FlxG.save.data.masterWeekUnlocked)
 		{
 			var weekName = !FlxG.save.data.hasPlayedMasterWeek ? LanguageManager.getTextString('story_masterWeekToPlay') : LanguageManager.getTextString('story_masterWeek');
@@ -256,13 +253,7 @@ class StoryMenuState extends MusicBeatState
 				switch (PlayState.storyWeek)
 				{
 					case 1:
-						FlxG.sound.music.stop();
-						var video:VideoHandler = new VideoHandler();
-						video.finishCallback = function()
-						{
-							LoadingState.loadAndSwitchState(new PlayState(), true);
-						}
-						video.playVideo(Paths.video('daveCutscene'));
+						LoadingState.loadAndSwitchState(new PlayState(), true);
 					case 5:
 						if (!FlxG.save.data.hasPlayedMasterWeek)
 						{

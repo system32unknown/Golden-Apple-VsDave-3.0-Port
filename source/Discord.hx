@@ -21,7 +21,7 @@ class DiscordClient
 			sleep(2);
 		}
 
-		DiscordRpc.shutdown();
+		shutdown();
 	}
 	
 	static function onReady()
@@ -32,6 +32,11 @@ class DiscordClient
 			largeImageKey: 'icon_logo',
 			largeImageText: "Golden Apple (VsDave 3.0)"
 		});
+	}
+
+	public static function shutdown()
+	{
+		DiscordRpc.shutdown();
 	}
 
 	static function onError(_code:Int, _message:String)
@@ -46,7 +51,7 @@ class DiscordClient
 
 	public static function initialize()
 	{
-		var DiscordDaemon = sys.thread.Thread.create(() ->
+		sys.thread.Thread.create(() ->
 		{
 			new DiscordClient();
 		});

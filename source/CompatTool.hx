@@ -10,6 +10,6 @@ class CompatTool
     public static function initSave()
     {
         save = new FlxSave();
-        save.bind('compatcheck', 'goldenapple');
+        save.bind('compatcheck', CoolUtil.getSavePath());
     }
 }

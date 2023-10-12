@@ -1,6 +1,5 @@
 package;
 
-import haxe.Http;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -12,22 +11,15 @@ import flixel.group.FlxGroup;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
-import flixel.sound.FlxSound;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import openfl.Assets;
-import lime.app.Application;
+import flixel.input.keyboard.FlxKey;
 #if desktop
 import Discord.DiscordClient;
-#end
-
-// only load this reference if its debug because its only needed for debug??? idk it might help with the file size or something 
-#if debug
-import openfl.net.FileReference;
-import haxe.Json;
 #end
 
 using StringTools;
@@ -43,11 +35,7 @@ class TitleState extends MusicBeatState
 
 	var curWacky:Array<String> = [];
 
-	var wackyImage:FlxSprite;
-
 	var awaitingExploitation:Bool;
-	var eye:FlxSprite;
-	var loopEyeTween:FlxTween;
 
 	override public function create():Void
 	{		
@@ -55,37 +43,30 @@ class TitleState extends MusicBeatState
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
 
-		// DEBUG BULLSHIT
+		super.create();
 
 		#if desktop
 		DiscordClient.initialize();
 		#end
 
-		super.create();
-
-		FlxG.save.bind('funkin', 'goldenapple');
+		FlxG.sound.muteKeys = [FlxKey.ZERO];
+		FlxG.save.bind('funkin', CoolUtil.getSavePath());
 
 		SaveDataHandler.initSave();
 		LanguageManager.init();
 
 		Highscore.load();
-		
 		CoolUtil.init();
-
-		Main.fps.visible = !FlxG.save.data.disableFps;
 
 		CompatTool.initSave();
 		if(CompatTool.save.data.compatMode == null)
-        {
-            FlxG.switchState(new CompatWarningState());
-        }
+		{
+			FlxG.switchState(new CompatWarningState());
+		}
+
 
 		if (FlxG.save.data.weekUnlocked != null)
 		{
-			// FIX LATER!!!
-			// WEEK UNLOCK PROGRESSION!!
-			// StoryMenuState.weekUnlocked = FlxG.save.data.weekUnlocked;
-
 			if (StoryMenuState.weekUnlocked.length < 4)
 				StoryMenuState.weekUnlocked.insert(0, true);
 
@@ -94,8 +75,7 @@ class TitleState extends MusicBeatState
 				StoryMenuState.weekUnlocked[0] = true;
 		}
 		
-		new FlxTimer().start(1, function(tmr:FlxTimer)
-		{
+		new FlxTimer().start(1, function(tmr:FlxTimer) {
 			startIntro();
 		});		
 	}
@@ -211,37 +191,8 @@ class TitleState extends MusicBeatState
 	{
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
-		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);
-
-		if (FlxG.keys.justPressed.F)
-		{
-			FlxG.fullscreen = !FlxG.fullscreen;
-		}
 
 		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER;
-
-		#if mobile
-		for (touch in FlxG.touches.list)
-		{
-			if (touch.justPressed)
-			{
-				pressedEnter = true;
-			}
-		}
-		#end
-
-		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
-
-		if (gamepad != null)
-		{
-			if (gamepad.justPressed.START)
-				pressedEnter = true;
-
-			#if switch
-			if (gamepad.justPressed.B)
-				pressedEnter = true;
-			#end
-		}
 
 		if (FlxG.keys.justPressed.ALT)
 		{
@@ -321,13 +272,11 @@ class TitleState extends MusicBeatState
 				case 12:
 					addMoreText("Friday Night Funkin'");
 				case 13:
-					addMoreText(awaitingExploitation ? 'Vs. Expunged' : 'VS. Dave');
+					addMoreText('VS. Dave');
 				case 14:
-					addMoreText(!awaitingExploitation  ? 'and Bambi' : 'The Full Mod');
+					addMoreText('and Bambi' );
 				case 15:
-					var text:String = !awaitingExploitation  ? 'The Full Mod' : 'HAHAHHAHAHAHAHHAHAHAHAHHAHAHAHAHHAHA\nHAHAHHAHAHAHAHHAHAHAHAHHAHAHAHAHHAHA\nHAHAHHAHAHAHAHHAHAHAHAHHAHAHAHAHHAHA';
-					if (awaitingExploitation) FlxG.sound.play(Paths.sound('evilLaugh', 'shared'), 0.7);
-					addMoreText(text);
+					addMoreText('The Full Mod');
 				case 16:
 					skipIntro();
 			}
@@ -368,11 +317,5 @@ class TitleState extends MusicBeatState
 			credGroup.remove(textGroup.members[0], true);
 			textGroup.remove(textGroup.members[0], true);
 		}
-	}
-	
-	function deleteOneCoolText()
-	{
-		credGroup.remove(textGroup.members[0], true);
-		textGroup.remove(textGroup.members[0], true);
 	}
 }

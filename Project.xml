@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project xmlns="http://lime.openfl.org/project/1.0.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://lime.openfl.org/project/1.0.4 http://lime.openfl.org/xsd/project-1.0.4.xsd">
+<project>
 
 	<!-- _________________________ Application Settings _________________________ -->
 
@@ -10,9 +10,11 @@
 	<!-- ____________________________ Window Settings ___________________________ -->
 
 	<!--These window settings apply to all targets-->
-	<window width="1280" height="720" fps="120" hardware="true" vsync="true" background="0x0000ffff"/>
-	<!--Desktop-->
-	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" vsync="false"/>
+	<window width="1280" height="720" fps="" hardware="true" vsync="false" background="#000000"/>
+	<window hardware="true" fps="" background=""/>
+	<window orientation="landscape"/>
+
+	<window if="desktop" width="1280" height="720" fullscreen="false" resizable="true" vsync="false"/>
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 	<set name="BUILD_DIR" value="export/debug" if="debug" />
@@ -25,15 +27,16 @@
 	<assets path="assets/songs"    library="songs"/>
 	<assets path="assets/shared"   library="shared"/>
 	<assets path='art/icons' rename='icons' embed='true'/>
-	<assets path="assets/fonts" embed='true'/>
+	<assets path="assets/fonts"/>
 
 	<define name="SHADERS_ENABLED" unless="mac"/>
 	<define name="PRELOAD_ALL" unless="web"/>
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
+	<define name="CRASH_HANDLER" if="desktop release" />
 	
 	<section if="PRELOAD_ALL">
-		<library name="songs"    preload="true" />
-		<library name="shared"   preload="true" />
+		<library name="songs" preload="true" />
+		<library name="shared" preload="true" />
 	</section>
 	
 	<section if="NO_PRELOAD_ALL">
@@ -49,6 +52,14 @@
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
 	<haxedef name="FLX_NO_DEBUG" unless="debug" />
 	<haxelib name="discord_rpc" if="desktop"/>
+
+	<haxelib name="hxcpp-debug-server" if="debug"/>
+
+	<section if="CRASH_HANDLER">
+		<haxedef name="HXCPP_CHECK_POINTER"/>
+		<haxedef name="HXCPP_STACK_LINE"/>
+		<haxedef name="HXCPP_STACK_TRACE"/>
+	</section>
 
 	<!-- _________________________________ Custom _______________________________ -->
 	<icon path="art/icons/dave.png" />

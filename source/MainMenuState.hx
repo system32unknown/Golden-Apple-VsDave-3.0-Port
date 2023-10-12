@@ -409,11 +409,11 @@ class MainMenuState extends MusicBeatState
 	{
 		for (save in ['funkin', 'controls', 'language'])
 		{
-			FlxG.save.bind(save, 'goldenapple');
+			FlxG.save.bind(save, CoolUtil.getSavePath());
 			FlxG.save.erase();
 			FlxG.save.flush();
 		}
-		FlxG.save.bind('funkin', 'goldenapple');
+		FlxG.save.bind('funkin', CoolUtil.getSavePath());
 
 		Highscore.songScores = new Map();
 		Highscore.songChars = new Map();

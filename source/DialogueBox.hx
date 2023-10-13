@@ -65,14 +65,7 @@ class DialogueBox extends FlxSpriteGroup
 				case 'house' | 'insanity' | 'splitathon' | 'shredder':
 					FlxG.sound.playMusic(Paths.music('DaveDialogue'), 0);
 				case 'polygonized' | 'interdimensional' | 'master':
-					if (PlayState.instance.localFunny != PlayState.CharacterFunnyEffect.Recurser)
-					{
-						FlxG.sound.playMusic(Paths.music('scaryAmbience'), 0);
-					}
-					else
-					{
-						FlxG.sound.playMusic(Paths.music('DaveDialogue'), 0);
-					}
+					FlxG.sound.playMusic(Paths.music('DaveDialogue'), 0);
 				case 'supernovae' | 'glitch':
 					randomNumber = FlxG.random.int(0, 50);
 					if (randomNumber == 50)
@@ -143,14 +136,7 @@ class DialogueBox extends FlxSpriteGroup
 			case 'insanity':
 				portraitLeftCharacter = ['dave', 'annoyed'];
 			case 'polygonized':
-				if (PlayState.instance.localFunny != PlayState.CharacterFunnyEffect.Recurser)
-				{
-					portraitLeftCharacter = ['dave', '3d-scared'];
-				}
-				else
-				{
-					portraitLeftCharacter = ['dave', 'normal'];
-				}
+				portraitLeftCharacter = ['dave', 'normal'];
 			case 'blocked':
 				portraitLeftCharacter = ['bambi', 'annoyed'];
 				portraitRightCharacter = ['gf', 'happy'];
@@ -204,7 +190,7 @@ class DialogueBox extends FlxSpriteGroup
 			case 'polygonized' | 'interdimensional':
 				dropText = new FlxText(242, 502, Std.int(FlxG.width * 0.6), "", 32);
 				dropText.font = 'Comic Sans MS Bold';
-				dropText.color = PlayState.instance.localFunny != PlayState.CharacterFunnyEffect.Recurser ? 0xFFFFFFFF : 0xFF00137F;
+				dropText.color = 0xFFFFFFFF;
 				dropText.antialiasing = true;
 				add(dropText);
 			

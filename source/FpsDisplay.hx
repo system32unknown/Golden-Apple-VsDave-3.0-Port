@@ -25,13 +25,12 @@ class FpsDisplay extends TextField
 	/**
 		The current frame rate, expressed using frames-per-second
 	**/
-	public var currentFPS(default, null):Int;
+	public var currentFPS(default, null):Int = 0;
 
-	@:noCompletion private var cacheCount:Int;
-	@:noCompletion private var currentTime:Float;
-	@:noCompletion private var times:Array<Float>;
+	@:noCompletion var cacheCount:Int = 0;
+	@:noCompletion var currentTime:Float = 0;
+	@:noCompletion var times:Array<Float> = [];
 
-    public var fuckFps:Bool = false;
 
 	public function new(x:Float = 10, y:Float = 10, color:Int = 0x000000)
 	{
@@ -40,16 +39,12 @@ class FpsDisplay extends TextField
 		this.x = x;
 		this.y = y;
 
-		currentFPS = 0;
-		selectable = false;
-		mouseEnabled = false;
 		defaultTextFormat = new TextFormat("_sans", 12, color);
 		text = "FPS: ";
 
-		cacheCount = 0;
-		currentTime = 0;
-		times = [];
-		wordWrap = true;
+		selectable = mouseEnabled = false;
+		multiline = wordWrap = false;
+		autoSize = LEFT;
 
 		#if flash
 		addEventListener(Event.ENTER_FRAME, function(e) {

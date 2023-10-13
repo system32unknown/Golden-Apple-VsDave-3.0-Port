@@ -261,38 +261,8 @@ class Note extends FlxSprite
 
 		}
 		var str:String = PlayState.SONG.song.toLowerCase();
-		if (isInState('PlayState'))
-		{
-			var state:PlayState = cast(FlxG.state, PlayState);
-			if (state.localFunny == CharacterFunnyEffect.Dave)
-			{
-				str = 'cheating';
-			}
-		}
 		switch (str)
 		{
-			case 'cheating':
-				switch (originalType)
-				{
-					case 0:
-						x += swagWidth * 3;
-						notetolookfor = 3;
-						animation.play('purpleScroll');
-					case 1:
-						x += swagWidth * 1;
-						notetolookfor = 0;
-						animation.play('blueScroll');
-					case 2:
-						x += swagWidth * 0;
-						notetolookfor = 1;
-						animation.play('greenScroll');
-					case 3:
-						notetolookfor = 2;
-						x += swagWidth * 2;
-						animation.play('redScroll');
-				}
-				flipY = (Math.round(Math.random()) == 0); // fuck you
-				flipX = (Math.round(Math.random()) == 1);
 			default:
 				x += swagWidth * originalType;
 				notetolookfor = originalType;

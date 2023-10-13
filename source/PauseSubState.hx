@@ -85,20 +85,9 @@ class PauseSubState extends MusicBeatSubstate
 		FlxTween.tween(backBg, {alpha: 0.6}, 0.4, {ease: FlxEase.quartInOut});
 		FlxTween.tween(bg, {alpha: 0.6}, 0.4, {ease: FlxEase.quartInOut});
 		FlxTween.tween(levelInfo, {alpha: 1, y: 20}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.3});
-		if (PlayState.isStoryMode || FreeplayState.skipSelect.contains(PlayState.SONG.song.toLowerCase()) || PlayState.instance.localFunny == PlayState.CharacterFunnyEffect.Recurser)
+		if (PlayState.isStoryMode || FreeplayState.skipSelect.contains(PlayState.SONG.song.toLowerCase()))
 		{
 			menuItems.remove(PauseOption.getOption(menuItems, 'Change Character'));
-		}
-		for (item in menuItems)
-		{
-			if (PlayState.instance.localFunny == PlayState.CharacterFunnyEffect.Recurser)
-			{
-				if(item.optionName != 'Resume' && item.optionName != 'No Miss Mode')
-				{
-					menuItems.remove(PauseOption.getOption(menuItems, item.optionName));
-				}
-				continue;
-			}
 		}
 
 		grpMenuShit = new FlxTypedGroup<Alphabet>();
@@ -177,31 +166,21 @@ class PauseSubState extends MusicBeatSubstate
 				FlxG.mouse.visible = false;
 				FlxG.resetState();
 			case "Change Character":
-				if (MathGameState.failedGame)
-					{
-						MathGameState.failedGame = false;
-					}
-					funnyTexts.clear();
-					PlayState.characteroverride = 'none';
-					PlayState.formoverride = 'none';
-					PlayState.recursedStaticWeek = false;
+				funnyTexts.clear();
+				PlayState.characteroverride = 'none';
+				PlayState.formoverride = 'none';
 
-					PlayState.instance.shakeCam = false;
-					PlayState.instance.camZooming = false;
-					FlxG.mouse.visible = false;
-					FlxG.switchState(new CharacterSelectState());	
+				PlayState.instance.shakeCam = false;
+				PlayState.instance.camZooming = false;
+				FlxG.mouse.visible = false;
+				FlxG.switchState(new CharacterSelectState());	
 			case "No Miss Mode":
 				PlayState.instance.noMiss = !PlayState.instance.noMiss;
 				var nm = PlayState.SONG.song.toLowerCase();
 			case "Exit to menu":
-				if (MathGameState.failedGame)
-				{
-					MathGameState.failedGame = false;
-				}
 				funnyTexts.clear();
 				PlayState.characteroverride = 'none';
 				PlayState.formoverride = 'none';
-				PlayState.recursedStaticWeek = false;
 
 
 				PlayState.instance.shakeCam = false;

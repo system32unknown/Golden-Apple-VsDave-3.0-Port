@@ -63,6 +63,9 @@ class PlayState extends MusicBeatState
 	public static var darkLevels:Array<String> = ['bambiFarmNight', 'daveHouse_night', 'unfairness', 'bedroomNight', 'backyard'];
 	public var sunsetLevels:Array<String> = ['bambiFarmSunset', 'daveHouse_Sunset'];
 
+	var scoreTxtTween:FlxTween;
+	var timeTxtTween:FlxTween;
+
 	public static var curmult:Array<Float> = [1, 1, 1, 1];
 
 	public var curbg:BGSprite;
@@ -1884,6 +1887,7 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
+		FlxG.camera.followLerp = 0;
 		elapsedtime += elapsed;
 
 		if (songName != null)
@@ -2001,6 +2005,7 @@ class PlayState extends MusicBeatState
 
 		if (FlxG.keys.justPressed.SEVEN)
 		{
+			FlxG.camera.followLerp = 0;
 			if(FlxTransitionableState.skipNextTransIn)
 			{
 				Transition.nextCamera = null;
@@ -2054,8 +2059,7 @@ class PlayState extends MusicBeatState
 			// Conductor.songPosition = FlxG.sound.music.time;
 			Conductor.songPosition += FlxG.elapsed * 1000;
 
-			if (!paused)
-			{
+			if (!paused) {
 				songTime += FlxG.game.ticks - previousFrameTime;
 				previousFrameTime = FlxG.game.ticks;
 
@@ -2064,13 +2068,11 @@ class PlayState extends MusicBeatState
 				{
 					songTime = (songTime + Conductor.songPosition) / 2;
 					Conductor.lastSongPos = Conductor.songPosition;
-					// Conductor.songPosition += FlxG.elapsed * 1000;
-					// trace('MISSED FRAME');
 				}
 			}
-
-			// Conductor.lastSongPos = FlxG.sound.music.time;
 		}
+		if (!inCutscene && !paused)
+			FlxG.camera.followLerp = FlxMath.bound(elapsed * 2.4 / (FlxG.updateFramerate / 60), 0, 1);
 
 		if (camZooming)
 		{
@@ -2497,7 +2499,6 @@ class PlayState extends MusicBeatState
 
 	public function createScorePopUp(daX:Float, daY:Float, autoPos:Bool, daRating:String, daCombo:Int, daStyle:String):Void
 	{
-
 		var assetPath:String = '';
 		switch (daStyle)
 		{
@@ -2508,8 +2509,7 @@ class PlayState extends MusicBeatState
 		var placement:String = Std.string(daCombo);
 
 		var coolText:FlxText = new FlxText(daX, daY, 0, placement, 32);
-		if (autoPos)
-		{
+		if (autoPos) {
 			coolText.screenCenter();
 			coolText.x = FlxG.width * 0.55;
 		}
@@ -2654,9 +2654,15 @@ class PlayState extends MusicBeatState
 		}
 		score = cast(FlxMath.roundDecimal(cast(score, Float) * curmult[note.noteData], 0), Int); //this is old code thats stupid Std.Int exists but i dont feel like changing this
 
-		if (!noMiss)
-		{
-			songScore += score;
+		if (!noMiss) songScore += score;
+
+		if (daRating != 'shit' || daRating != 'bad') {
+			if(scoreTxtTween != null) scoreTxtTween.cancel();
+
+			scoreTxt.scale.set(1.1, 1.1);
+			scoreTxtTween = FlxTween.tween(scoreTxt.scale, {x: 1, y: 1}, 0.2, {
+				onComplete: (twn:FlxTween) -> scoreTxtTween = null
+			});
 		}
 
 		switch (SONG.song.toLowerCase())
@@ -3151,6 +3157,15 @@ class PlayState extends MusicBeatState
 	override function beatHit()
 	{
 		super.beatHit();
+
+		if(curBeat % camBeatSnap == 0) {
+			if(timeTxtTween != null) timeTxtTween.cancel();
+
+			songName.scale.set(1.1, 1.1);
+			timeTxtTween = FlxTween.tween(songName.scale, {x: 1, y: 1}, 0.2, {
+				onComplete: (twn:FlxTween) -> timeTxtTween = null
+			});
+		}
 
 		var currentSection = SONG.notes[Std.int(curStep / 16)];
 		if (!UsingNewCam)

@@ -2,17 +2,16 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxObject;
-import flixel.FlxSubState;
-import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
-import flash.system.System;
+import flixel.math.FlxMath;
 import lime.app.Application;
 
 class GameOverSubstate extends MusicBeatSubstate
 {
 	var bf:Boyfriend;
 	var camFollow:FlxObject;
+	var updateCamera:Bool = false;
 
 	var stageSuffix:String = "";
 	var deathSuffix:String = '';
@@ -70,6 +69,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		bf.playAnim('firstDeath');
 	}
 
+	var isFollowingAlready:Bool = false;
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
@@ -90,15 +90,21 @@ class GameOverSubstate extends MusicBeatSubstate
 				FlxG.switchState(new FreeplayState());
 		}
 
-		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.curFrame == 12)
-		{
-			FlxG.camera.follow(camFollow, LOCKON, 0.01);
+		if (bf.animation.curAnim.name == 'firstDeath') {
+			if (bf.animation.curAnim.curFrame >= 12 && !isFollowingAlready) {
+				FlxG.camera.follow(camFollow, LOCKON, 0.01);
+				updateCamera = true;
+				isFollowingAlready = true;
+			}
 		}
 
 		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.finished)
 		{
 			FlxG.sound.playMusic(Paths.music('gameOver' + stageSuffix));
 		}
+
+		if(updateCamera) FlxG.camera.followLerp = FlxMath.bound(elapsed * .6 / (FlxG.updateFramerate / 60), 0, 1);
+		else FlxG.camera.followLerp = 0;
 
 		if (FlxG.sound.music.playing)
 		{

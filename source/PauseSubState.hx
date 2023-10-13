@@ -182,10 +182,10 @@ class PauseSubState extends MusicBeatSubstate
 				PlayState.characteroverride = 'none';
 				PlayState.formoverride = 'none';
 
-
 				PlayState.instance.shakeCam = false;
 				PlayState.instance.camZooming = false;
 				FlxG.mouse.visible = false;
+				FlxG.camera.followLerp = 0;
 				FlxG.switchState(new MainMenuState());
 		}
 	}

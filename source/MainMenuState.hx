@@ -10,6 +10,7 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
+import flixel.math.FlxMath;
 #if desktop
 import Discord.DiscordClient;
 #end
@@ -229,6 +230,7 @@ class MainMenuState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+		FlxG.camera.followLerp = FlxMath.bound(elapsed * 9 / (FlxG.updateFramerate / 60), 0, 1);
 		if (FlxG.sound.music.volume < 0.8)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;

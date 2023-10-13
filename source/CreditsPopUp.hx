@@ -109,11 +109,6 @@ class CreditsPopUp extends FlxSpriteGroup
 			case 'interdimensional':
 				headingPath = {path: 'songHeadings/interdimensionalHeading', antiAliasing: false, iconOffset: 0};
 		}
-		if (PlayState.recursedStaticWeek)
-		{
-			headingPath = {path: 'songHeadings/somethingHeading', antiAliasing: false,
-				animation: new Animation('scramble', 'Scramble', 24, true, [false, false]), iconOffset: 0};
-		}
 
 		if (headingPath != null)
 		{

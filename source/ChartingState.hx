@@ -90,9 +90,6 @@ class ChartingState extends MusicBeatState
 	var gridBlackLine:FlxSprite;
 	var vocals:FlxSound;
 
-	var player2:Character = new Character(0,0, "dad");
-	var player1:Boyfriend = new Boyfriend(0,0, "bf");
-
 	var leftIcon:HealthIcon;
 	var rightIcon:HealthIcon;
 
@@ -519,24 +516,6 @@ class ChartingState extends MusicBeatState
 		};
 	}
 
-	function generateUI():Void
-	{
-		while (bullshitUI.members.length > 0)
-		{
-			bullshitUI.remove(bullshitUI.members[0], true);
-		}
-
-		// general shit
-		var title:FlxText = new FlxText(UI_box.x + 20, UI_box.y + 20, 0);
-		bullshitUI.add(title);
-		/* 
-			var loopCheck = new FlxUICheckBox(UI_box.x + 10, UI_box.y + 50, null, null, "Loops", 100, ['loop check']);
-			loopCheck.checked = curNoteSelected.doesLoop;
-			tooltips.add(loopCheck, {title: 'Section looping', body: "Whether or not it's a simon says style section", style: tooltipType});
-			bullshitUI.add(loopCheck);
-		 */
-	}
-
 	override function getEvent(id:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>)
 	{
 		if (id == FlxUICheckBox.CLICK_EVENT)
@@ -612,22 +591,6 @@ class ChartingState extends MusicBeatState
 		// FlxG.log.add(id + " WEED " + sender + " WEED " + data + " WEED " + params);
 	}
 
-	var updatedSection:Bool = false;
-
-	/* this function got owned LOL
-		function lengthBpmBullshit():Float
-		{
-			if (_song.notes[curSection].changeBPM)
-				return _song.notes[curSection].lengthInSteps * (_song.notes[curSection].bpm / _song.bpm);
-			else
-				return _song.notes[curSection].lengthInSteps;
-	}*/
-
-	function stepStartTime(step):Float
-	{
-		return _song.bpm / (step / 4) / 60;
-	}
-
 	function sectionStartTime():Float
 	{
 		var daBPM:Float = _song.bpm;
@@ -643,7 +606,7 @@ class ChartingState extends MusicBeatState
 		return daPos;
 	}
 
-	var writingNotes:Bool = false;
+
 	var doSnapShit:Bool = true;
 
 	override function update(elapsed:Float)
@@ -653,15 +616,6 @@ class ChartingState extends MusicBeatState
 		snapText.text = "Snap: 1/" + snap + " (" + (doSnapShit ? "Control to disable" : "Snap Disabled, Control to renable") + ")\nAdd Notes: 1-8 (or click)\n";
 
 		curStep = recalculateSteps();
-
-		/*if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.RIGHT)
-			snap = snap * 2;
-		if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.LEFT)
-			snap = Math.round(snap / 2);
-		if (snap >= 192)
-			snap = 192;
-		if (snap <= 1)
-			snap = 1;*/
 
 		if (FlxG.keys.justPressed.O)
 		{
@@ -726,75 +680,6 @@ class ChartingState extends MusicBeatState
 				}
 			});
 		}
-		/*curRenderedNotes.forEach(function(note:Note) {
-			if (strumLine.overlaps(note) && strumLine.y == note.y) // yandere dev type shit
-			{
-				if (_song.notes[curSection].mustHitSection)
-					{
-						trace('must hit ' + Math.abs(note.noteData));
-						if (note.noteData < 4)
-						{
-							switch (Math.abs(note.noteData))
-							{
-								case 2:
-									player1.playAnim('singUP', true);
-								case 3:
-									player1.playAnim('singRIGHT', true);
-								case 1:
-									player1.playAnim('singDOWN', true);
-								case 0:
-									player1.playAnim('singLEFT', true);
-							}
-						}
-						if (note.noteData >= 4)
-						{
-							switch (note.noteData)
-							{
-								case 6:
-									player2.playAnim('singUP', true);
-								case 7:
-									player2.playAnim('singRIGHT', true);
-								case 5:
-									player2.playAnim('singDOWN', true);
-								case 4:
-									player2.playAnim('singLEFT', true);
-							}
-						}
-					}
-					else
-					{
-						trace('hit ' + Math.abs(note.noteData));
-						if (note.noteData < 4)
-						{
-							switch (Math.abs(note.noteData))
-							{
-								case 2:
-									player2.playAnim('singUP', true);
-								case 3:
-									player2.playAnim('singRIGHT', true);
-								case 1:
-									player2.playAnim('singDOWN', true);
-								case 0:
-									player2.playAnim('singLEFT', true);
-							}
-						}
-						if (note.noteData >= 4)
-						{
-							switch (note.noteData)
-							{
-								case 6:
-									player1.playAnim('singUP', true);
-								case 7:
-									player1.playAnim('singRIGHT', true);
-								case 5:
-									player1.playAnim('singDOWN', true);
-								case 4:
-									player1.playAnim('singLEFT', true);
-							}
-						}
-					}
-			}
-		});*/
 
 		if (curBeat % 4 == 0 && curStep >= 16 * (curSection + 1))
 		{
@@ -1106,14 +991,6 @@ class ChartingState extends MusicBeatState
 				FlxG.sound.music.pause();
 				vocals.pause();
 
-				/*var daNum:Int = 0;
-					var daLength:Float = 0;
-					while (daNum <= sec)
-					{
-						daLength += lengthBpmBullshit();
-						daNum++;
-				}*/
-
 				FlxG.sound.music.time = sectionStartTime();
 				vocals.time = FlxG.sound.music.time;
 				updateCurStep();
@@ -1215,20 +1092,6 @@ class ChartingState extends MusicBeatState
 			Conductor.changeBPM(daBPM);
 		}
 
-		/* // PORT BULLSHIT, INCASE THERE'S NO SUSTAIN DATA FOR A NOTE
-			for (sec in 0..._song.notes.length)
-			{
-				for (notesse in 0..._song.notes[sec].sectionNotes.length)
-				{
-					if (_song.notes[sec].sectionNotes[notesse][2] == null)
-					{
-						trace('SUS NULL');
-						_song.notes[sec].sectionNotes[notesse][2] = 0;
-					}
-				}
-			}
-		 */
-
 		for (i in sectionInfo)
 		{
 			var daNoteInfo = i[1];
@@ -1313,16 +1176,6 @@ class ChartingState extends MusicBeatState
 	function clearSection():Void
 	{
 		_song.notes[curSection].sectionNotes = [];
-
-		updateGrid();
-	}
-
-	function clearSong():Void
-	{
-		for (daSection in 0..._song.notes.length)
-		{
-			_song.notes[daSection].sectionNotes = [];
-		}
 
 		updateGrid();
 	}
@@ -1420,80 +1273,6 @@ class ChartingState extends MusicBeatState
 	{
 		return FlxMath.remapToRange(strumTime, 0, 16 * Conductor.stepCrochet, gridBG.y, gridBG.y + gridBG.height);
 	}	
-
-	/*
-		function calculateSectionLengths(?sec:SwagSection):Int
-		{
-			var daLength:Int = 0;
-			for (i in _song.notes)
-			{
-				var swagLength = i.lengthInSteps;
-				if (i.typeOfSection == Section.COPYCAT)
-					swagLength * 2;
-				daLength += swagLength;
-				if (sec != null && sec == i)
-				{
-					trace('swag loop??');
-					break;
-				}
-			}
-			return daLength;
-	}*/
-	private var daSpacing:Float = 0.3;
-
-	function loadLevel():Void
-	{
-		trace(_song.notes);
-	}
-
-	function getNotes():Array<Dynamic>
-	{
-		var noteData:Array<Dynamic> = [];
-
-		for (i in _song.notes)
-		{
-			noteData.push(i.sectionNotes);
-		}
-
-		return noteData;
-	}
-
-	public static function hahaFunnyRecursed()
-	{
-		var songList = FileSystem.readDirectory('assets/songs');
-		for (song in FileSystem.readDirectory('assets/songs'))
-		{
-			var removeSong = false;
-
-			var songCheckThing:Array<Dynamic> = [
-				['cheating', FlxG.save.data.cheatingFound],
-				['exploitation', FlxG.save.data.exploitationFound],
-				['supernovae', FlxG.save.data.hasPlayedMasterWeek],
-				['glitch', FlxG.save.data.hasPlayedMasterWeek],
-				['master', FlxG.save.data.hasPlayedMasterWeek],
-				['kabunga', FlxG.save.data.exbungoFound],
-				['recursed', FlxG.save.data.recursedUnlocked],
-				['roofs', FlxG.save.data.roofsUnlocked],
-				['vs-dave-rap-two', FlxG.save.data.vsDaveRapTwoFound]
-			];
-			for (songCheck in songCheckThing)
-			{
-				if (song == songCheck[0] && !songCheck[1])
-				{
-					removeSong = true;
-				}
-			}
-			if (removeSong) songList.remove(song);
-		}
-		var randomSong = songList[FlxG.random.int(0, songList.length - 1)];
-		PlayState.SONG = Song.loadFromJson(randomSong);
-
-		PlayState.characteroverride = "none";
-		PlayState.formoverride = "none";
-		PlayState.recursedStaticWeek = true;
-
-		FlxG.switchState(new PlayState());
-	}
 
 	function loadJson(song:String):Void
 	{

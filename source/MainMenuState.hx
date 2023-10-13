@@ -110,8 +110,6 @@ class MainMenuState extends MusicBeatState
 		#end
 		
 		KeybindPrefs.loadControls();
-		
-		MathGameState.accessThroughTerminal = false;
 
 		bg = new FlxSprite(-80).loadGraphic(randomizeBG());
 		bg.scrollFactor.set();
@@ -204,7 +202,7 @@ class MainMenuState extends MusicBeatState
 
 		firstStart = false;
 
-		var versionShit:FlxText = new FlxText(1, FlxG.height - 25, 0, '${daRealEngineVer} Engine v${engineVer}\nFNF v${gameVer}', 12);
+		var versionShit:FlxText = new FlxText(1, FlxG.height - 25, 0, '${daRealEngineVer} Engine v${engineVer}\nGolden Apple v1.2', 12);
 		versionShit.antialiasing = true;
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("Comic Sans MS Bold", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);

@@ -57,9 +57,8 @@ class MainMenuState extends MusicBeatState
 	public static var firstStart:Bool = true;
 	public static var finishedFunnyMove:Bool = false;
 
-	public static var daRealEngineVer:String = 'Golden Apple';
-	public static var engineVer:String = '(Dave 3.0b)';
-	public static var gameVer:String = "0.2.7.1";
+	public static var daRealEngineVer:String = 'Golden Apple 1.2';
+	public static var engineVer:String = ' (Dave 3.0b)';
 	
 	var bg:FlxSprite;
 	var magenta:FlxSprite;
@@ -203,7 +202,7 @@ class MainMenuState extends MusicBeatState
 
 		firstStart = false;
 
-		var versionShit:FlxText = new FlxText(1, FlxG.height - 25, 0, '${daRealEngineVer} Engine v${engineVer}\nGolden Apple v1.2', 12);
+		var versionShit:FlxText = new FlxText(1, FlxG.height - 25, 0, '${daRealEngineVer} Engine v${engineVer}', 12);
 		versionShit.antialiasing = true;
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("Comic Sans MS Bold", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);

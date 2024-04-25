@@ -725,13 +725,14 @@ class PlayState extends MusicBeatState
 
 		if (FlxG.save.data.songPosition)
 		{
-			var yPos = scrollType == 'downscroll' ? FlxG.height * .9 + 20 : strumLine.y - 20;
+			var yPos = scrollType == 'downscroll' ? FlxG.height - 44 : 19;
 
-			songName = new FlxText(42 + (FlxG.width / 2) - 248, yPos, 0, "", 32);
+			songName = new FlxText(42 + (FlxG.width / 2) - 248, yPos, 400, "", 32);
 			songName.setFormat("Comic Sans MS Bold", 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			songName.alpha = 0;
 			songName.scrollFactor.set();
 			songName.borderSize = 2;
+			songName.screenCenter(X);
 			add(songName);
 
 			songName.cameras = [camHUD];
@@ -2020,15 +2021,12 @@ class PlayState extends MusicBeatState
 			#end
 		}
 
-		var thingy = 0.88;
-
-		iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, thingy)),Std.int(FlxMath.lerp(150, iconP1.height, thingy)));
-		iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width, thingy)),Std.int(FlxMath.lerp(150, iconP2.height, thingy)));
+		iconP1.centerOffsets();
+		iconP2.centerOffsets();
 		iconP1.updateHitbox();
 		iconP2.updateHitbox();
 
 		var iconOffset:Int = 26;
-
 		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
 		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
 
@@ -3235,12 +3233,27 @@ class PlayState extends MusicBeatState
 			gf.playAnim('scared', true);
 		}
 
-		var funny:Float = Math.max(Math.min(healthBar.value,1.9),0.1);
-		iconP1.setGraphicSize(Std.int(iconP1.width + (50 * (funny + 0.1))),Std.int(iconP1.height - (25 * funny)));
-		iconP2.setGraphicSize(Std.int(iconP2.width + (50 * ((2 - funny) + 0.1))),Std.int(iconP2.height - (25 * ((2 - funny) + 0.1))));
+		if (curBeat % gfSpeed == 0) {
+			if (curBeat % (gfSpeed * 2) == 0) {
+				iconP1.scale.set(1.1, 0.8);
+				iconP2.scale.set(1.1, 1.3);
 
-		iconP1.updateHitbox();
-		iconP2.updateHitbox();
+				FlxTween.angle(iconP1, -15, 0, Conductor.crochet / 1300 * gfSpeed, {ease: FlxEase.quadOut});
+				FlxTween.angle(iconP2, 15, 0, Conductor.crochet / 1300 * gfSpeed, {ease: FlxEase.quadOut});
+			} else {
+				iconP1.scale.set(1.1, 1.3);
+				iconP2.scale.set(1.1, 0.8);
+
+				FlxTween.angle(iconP2, -15, 0, Conductor.crochet / 1300 * gfSpeed, {ease: FlxEase.quadOut});
+				FlxTween.angle(iconP1, 15, 0, Conductor.crochet / 1300 * gfSpeed, {ease: FlxEase.quadOut});
+			}
+
+			FlxTween.tween(iconP1, {'scale.x': 1, 'scale.y': 1}, Conductor.crochet / 1250 * gfSpeed, {ease: FlxEase.quadOut});
+			FlxTween.tween(iconP2, {'scale.x': 1, 'scale.y': 1}, Conductor.crochet / 1250 * gfSpeed, {ease: FlxEase.quadOut});
+
+			iconP1.updateHitbox();
+			iconP2.updateHitbox();
+		}
 
 		if(curBeat % 2 == 0)
 		{
